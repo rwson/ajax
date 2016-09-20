@@ -19,8 +19,12 @@
     //  cache some regexps
     var xmlRe = /xml/i,
         scriptRe = /script/i,
-        jsonRe = /json/i,
-        jsonpRe = /jsonp/i;
+        jsonRe = /json$/i,
+        jsonpRe = /jsonp$/i;
+
+    //  left space characters and right space characters
+    var leftSpace = /^\s+/,
+        rightSpace = /\s+$/;
 
     //  cache accept map
     var typeMaps = {
@@ -297,16 +301,25 @@
     //  get data type
     function _getDataType(type) {
         var res = "text";
+        type = _trim(type);
         if (xmlRe.test(type)) {
             res = "xml";
         } else if (scriptRe.test(type)) {
             res = "script";
+        }
+        //  validate jsonp type before, prevent "jsonp" transfered to "json"
+        else if(jsonpRe.test(type)) {
+            res = "jsonp";
         } else if (jsonRe.test(type)) {
             res = "json";
-        } else if (jsonpRe.test(type)) {
-            res = "jsonp";
         }
         return res;
+    }
+
+    //  trim string
+    function _trim(str) {
+        str = ("" + str);
+        return _typeOf(str.trim) === "Function" ? str.trim ? (str.replace(leftSpace, "").replace(rightSpace, ""));
     }
 
     //  get the className of an object

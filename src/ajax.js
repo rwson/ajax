@@ -19,8 +19,8 @@
     //  cache some regexps
     var xmlRe = /xml/i,
         scriptRe = /script/i,
-        jsonRe = /json/i,
-        jsonpRe = /jsonp/i;
+        jsonRe = /json$/i,
+        jsonpRe = /jsonp$/i;
 
     //  cache accept map
     var typeMaps = {
