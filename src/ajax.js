@@ -259,7 +259,7 @@
 
                     //  not Object/Array type direct push to the result array
                 default:
-                    res.push(key + "[]" + "=" + array[i]);
+                    res.push(_encode(key + "[]" + "=" + array[i]));
                     break;
 
             }
@@ -287,7 +287,7 @@
 
                     //  not Object/Array type direct push to the result array
                 default:
-                    res.push(key + "[" + i + "]" + "=" + object[i]);
+                    res.push(_encode(key + "[" + i + "]" + "=" + object[i]));
                     break;
             }
         }
