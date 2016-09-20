@@ -16,7 +16,7 @@
     
     //  开一个新的Terminal Tab,切换到server2 目录下,启动服务,模拟跨域请求
     
-    cd ../example
+    cd ../server2
     
     npm install
     
