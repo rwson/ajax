@@ -16,7 +16,7 @@
     
     //  开一个新的Terminal Tab,切换到server2 目录下,启动服务,模拟跨域请求
     
-    cd ..
+    cd ../example
     
     npm install
     
@@ -52,6 +52,8 @@
         
     });
 
+在ajax/example/example.js文件中可以看到完整的调用例子
+
 #### API
 
 
@@ -67,7 +69,5 @@ timeout | 超时时间(ms,为-1的时候表示不设置超时时间) | Number | 
 async | 是否异步 | Boolean | true | 否
 context | 回调函数中的this指向 | Object | window | 否
 
-其中:
 
 - dataType的可选值有"json"、 "text"、"script"、"xml"、"jsonp"五个可选值
-- method的可选值有"get"、"post"、"put"、"delete"、"head"、"update"等可选项

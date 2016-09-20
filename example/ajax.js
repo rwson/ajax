@@ -19,8 +19,8 @@
     //  cache some regexps
     var xmlRe = /xml/i,
         scriptRe = /script/i,
-        jsonRe = /json$/i,
-        jsonpRe = /jsonp$/i;
+        jsonRe = /json/i,
+        jsonpRe = /jsonp/i;
 
     //  cache accept map
     var typeMaps = {
@@ -32,7 +32,7 @@
     };
 
     //  cache the head tag
-    var head = document.getElementsByTagName("head")[0];
+    var body = document.getElementsByTagName("head");
 
     //  default configs about ajax
     var defaultCfg = {
@@ -43,6 +43,7 @@
         dataType: "JSON",
         withCredentials: false,
         timeout: -1,
+        contentType: "",
         async: true,
         context: root,
         before: function() {},
@@ -60,7 +61,7 @@
             timeout = null,
             hasTimeout = false,
             supportCors = true,
-            xhr, headers, scriptNode, response, data, dataType, callback;
+            xhr, headers, scriptNode, response, data, dataType;
 
         data = _serializenData(finalCfg.data);
         dataType = _getDataType(finalCfg.dataType);
@@ -91,70 +92,24 @@
 
         //  jsonp type request
         if (dataType === "jsonp") {
-            callback = "jsonp_" + (+new Date());
-
-            //  create a global functuon to be call
-            root[callback] = function(response) {
-                if (!hasTimeout) {
-                    clearTimeout(timeout);
-                    if (scriptNode) {
-                        head.removeChild(scriptNode);
-                        scriptNode = null;
-                    }
-                    //  excute the success callback
-                    if (_typeOf(finalCfg.success) === "Function") {
-                        finalCfg.success.call(finalCfg.context, response);
-                        delete root[callback];
-                    }
-                }
-            }
-
             scriptNode = document.createElement("script");
             if (finalCfg.url.indexOf("?") > -1) {
                 finalCfg.url += data;
             } else {
                 finalCfg.url += ("?" + data);
             }
-            finalCfg.url += "&callback=" + callback;
-
             scriptNode.src = finalCfg.url;
-            scriptNode.type = "text/javascript";
             head.appendChild(scriptNode);
-
-            //  onload event
             scriptNode.onload = function() {
-                if (scriptNode) {
-                    head.removeChild(scriptNode);
-                    scriptNode = null;
-                }
+                head.removeChild(scriptNode);
                 if (!hasTimeout && timeout) {
                     clearTimeout(timeout);
-                    delete root[callback];
-                    if (_typeOf(finalCfg.error) === "Function") {
-                        finalCfg.error.call(finalCfg.context, {
-                            type: "timeout"
-                        });
-                    }
+                }
+                //  excute the success callback
+                if (_typeOf(finalCfg.success) === "Function") {
+                    finalCfg.success.call(finalCfg.context, response, xhr);
                 }
             };
-
-            //  onerror event
-            scriptNode.onerror = function() {
-                if (scriptNode) {
-                    head.removeChild(scriptNode);
-                    scriptNode = null;
-                }
-                if (!hasTimeout && timeout) {
-                    clearTimeout(timeout);
-                }
-                if (_typeOf(finalCfg.error) === "Function") {
-                    finalCfg.error.call(finalCfg.context, {
-                        type: "loaderror"
-                    });
-                }
-                delete root[callback];
-            }
-
         } else {
             xhr = root.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
             supportCors = "withCredentials" in xhr;
@@ -264,11 +219,11 @@
 
                     //  two refrence type(Object/Array) need to loop them and push the return value to the result array
                     case "Object":
-                        res.push(_loopObject(data[i], i));
+                        res.push(_encode(_loopObject(data[i], i)));
                         break;
 
                     case "Array":
-                        res.push(_loopArray(data[i], i));
+                        res.push(_encode(_loopArray(data[i], i)));
                         break;
 
                         //  not Object/Array type direct push to the result array
@@ -295,16 +250,16 @@
 
                 //  two refrence type(Object/Array) need to loop them and push the return value to the result array
                 case "Array":
-                    res.push(_loopArray(array[i], (key + "[" + i + "]")));
+                    res.push(_encode(_loopArray(array[i], (key + "[" + i + "]"))));
                     break;
 
                 case "Object":
-                    res.push(_loopObject(array[i], (key + "[" + i + "]")));
+                    res.push(_encode(_loopObject(array[i], (key + "[" + i + "]"))));
                     break;
 
                     //  not Object/Array type direct push to the result array
                 default:
-                    res.push(_encode(key + "[]") + "=" + _encode(array[i]));
+                    res.push(key + "[]" + "=" + array[i]);
                     break;
 
             }
@@ -332,7 +287,7 @@
 
                     //  not Object/Array type direct push to the result array
                 default:
-                    res.push(_encode(key + "[" + i + "]") + "=" + _encode(object[i]));
+                    res.push(key + "[" + i + "]" + "=" + object[i]);
                     break;
             }
         }

@@ -219,11 +219,11 @@
 
                     //  two refrence type(Object/Array) need to loop them and push the return value to the result array
                     case "Object":
-                        res.push(_loopObject(data[i], i));
+                        res.push(_encode(_loopObject(data[i], i)));
                         break;
 
                     case "Array":
-                        res.push(_loopArray(data[i], i));
+                        res.push(_encode(_loopArray(data[i], i)));
                         break;
 
                         //  not Object/Array type direct push to the result array
@@ -250,16 +250,16 @@
 
                 //  two refrence type(Object/Array) need to loop them and push the return value to the result array
                 case "Array":
-                    res.push(_loopArray(array[i], (key + "[" + i + "]")));
+                    res.push(_encode(_loopArray(array[i], (key + "[" + i + "]"))));
                     break;
 
                 case "Object":
-                    res.push(_loopObject(array[i], (key + "[" + i + "]")));
+                    res.push(_encode(_loopObject(array[i], (key + "[" + i + "]"))));
                     break;
 
                     //  not Object/Array type direct push to the result array
                 default:
-                    res.push(_encode(key + "[]") + "=" + _encode(array[i]));
+                    res.push(key + "[]" + "=" + array[i]);
                     break;
 
             }
@@ -287,7 +287,7 @@
 
                     //  not Object/Array type direct push to the result array
                 default:
-                    res.push(_encode(key + "[" + i + "]") + "=" + _encode(object[i]));
+                    res.push(key + "[" + i + "]" + "=" + object[i]);
                     break;
             }
         }
