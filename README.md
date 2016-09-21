@@ -62,7 +62,7 @@
 url | 请求地址 | String | 当前页面的地址 | 是
 method | 数据发送方式 | String | "GET" | 否
 data | 要传递给后端的数据 | Object | {} | 否
-headers | 请求头设置 | String | 当前页面的地址 | 是
+headers | 请求头设置 | String | {} | 是
 dataType | 后端返回的数据类型 | String | "json" | 否
 withCredentials | 是否允许跨域请求(如果设置了cookie,可以带cookie证书) | Boolean | false | 否
 timeout | 超时时间(ms,为-1的时候表示不设置超时时间) | Number | -1 | 否
