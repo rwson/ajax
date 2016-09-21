@@ -22,10 +22,6 @@
         jsonRe = /json$/i,
         jsonpRe = /jsonp$/i;
 
-    //  left space characters and right space characters
-    var leftSpace = /^\s+/,
-        rightSpace = /\s+$/;
-
     //  cache accept map
     var typeMaps = {
         script: "text/javascript, application/javascript",
@@ -83,7 +79,7 @@
         if (finalCfg.timeout > 0) {
             timeout = setTimeout(function() {
                 if (_typeOf(finalCfg.abort) === "Function") {
-                    finalCfg.abort.call(finalCfg.context, xhr);
+                    finalCfg.abort.call(finalCfg.context, xhr || null);
                 }
                 hasTimeout = true;
             }, finalCfg.timeout);
@@ -111,7 +107,7 @@
                 }
                 //  excute the success callback
                 if (_typeOf(finalCfg.success) === "Function") {
-                    finalCfg.success.call(finalCfg.context, response, xhr);
+                    finalCfg.success.call(finalCfg.context, response, null);
                 }
             };
         } else {
@@ -263,7 +259,7 @@
 
                     //  not Object/Array type direct push to the result array
                 default:
-                    res.push(key + "[]" + "=" + array[i]);
+                    res.push(_encode(key + "[]" + "=" + array[i]));
                     break;
 
             }
@@ -291,7 +287,7 @@
 
                     //  not Object/Array type direct push to the result array
                 default:
-                    res.push(key + "[" + i + "]" + "=" + object[i]);
+                    res.push(_encode(key + "[" + i + "]" + "=" + object[i]));
                     break;
             }
         }
@@ -301,25 +297,16 @@
     //  get data type
     function _getDataType(type) {
         var res = "text";
-        type = _trim(type);
         if (xmlRe.test(type)) {
             res = "xml";
         } else if (scriptRe.test(type)) {
             res = "script";
-        }
-        //  validate jsonp type before, prevent "jsonp" transfered to "json"
-        else if(jsonpRe.test(type)) {
-            res = "jsonp";
         } else if (jsonRe.test(type)) {
             res = "json";
+        } else if (jsonpRe.test(type)) {
+            res = "jsonp";
         }
         return res;
-    }
-
-    //  trim string
-    function _trim(str) {
-        str = ("" + str);
-        return _typeOf(str.trim) === "Function" ? str.trim ? (str.replace(leftSpace, "").replace(rightSpace, ""));
     }
 
     //  get the className of an object

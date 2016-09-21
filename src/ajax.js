@@ -79,7 +79,7 @@
         if (finalCfg.timeout > 0) {
             timeout = setTimeout(function() {
                 if (_typeOf(finalCfg.abort) === "Function") {
-                    finalCfg.abort.call(finalCfg.context, xhr);
+                    finalCfg.abort.call(finalCfg.context, xhr || null);
                 }
                 hasTimeout = true;
             }, finalCfg.timeout);
@@ -107,7 +107,7 @@
                 }
                 //  excute the success callback
                 if (_typeOf(finalCfg.success) === "Function") {
-                    finalCfg.success.call(finalCfg.context, response, xhr);
+                    finalCfg.success.call(finalCfg.context, response, null);
                 }
             };
         } else {
