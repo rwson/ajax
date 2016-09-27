@@ -4,7 +4,7 @@
  * @mail   rw_Song@sina.com
  */
 
-"use strtct";
+"use strict";
 
 (function(root, factory, undefined) {
 
