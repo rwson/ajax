@@ -1,6 +1,6 @@
 ### ajax
 
-独立的ajax库,可单独使用,支持cors/jsonp等跨域请求,支持拦截器、取消请求
+独立的ajax库,可单独使用,支持cors/jsonp等跨域请求,支持全局http拦截器、取消请求
 
 #### demo
 
