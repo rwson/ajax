@@ -7,9 +7,7 @@
 ```bash
 git clone https://github.com/rwson/ajax
 
-cd ajax
-
-cd example
+cd ajax/demo/example
 
 npm install
 
