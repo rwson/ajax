@@ -35,7 +35,7 @@
     var responseInterceptors = [];
 
     //  cache the head tag
-    var body = document.getElementsByTagName("head");
+    var head = document.getElementsByTagName("head")[0];
 
     //  default configs about ajax
     var defaultCfg = {
@@ -49,7 +49,6 @@
         contentType: "",
         async: true,
         context: root,
-        before: function() {},
         abort: function() {},
         success: function() {},
         error: function() {}
@@ -88,14 +87,10 @@
             }, finalCfg.timeout);
         }
 
-        //  before the request start
-        if (_typeOf(finalCfg.before) === "Function") {
-            finalCfg.before.call(finalCfg.context);
-        }
-
         //  jsonp type request
         if (dataType === "jsonp") {
             scriptNode = document.createElement("script");
+            scriptNode.type = "text/javascript";
             if (finalCfg.url.indexOf("?") > -1) {
                 finalCfg.url += data;
             } else {
@@ -117,12 +112,21 @@
             xhr = root.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
             supportCors = "withCredentials" in xhr;
 
+            for(var i = 0, len = requestInterceptors.length; i < len; i ++) {
+                requestInterceptors[i](xhr);
+            }
+
             //  bind the readystate change event
             xhr.onreadystatechange = function() {
                 //  already timeout
                 if (hasTimeout) {
                     return;
                 }
+
+                for(var i = 0, len = responseInterceptors.length; i < len; i ++) {
+                    responseInterceptors[i](xhr);
+                }
+
                 if (xhr.readyState === 4) {
                     //  setted the time out, and not timeout until now
                     if (timeout) {
@@ -189,6 +193,8 @@
             xhr.open(finalCfg.method, finalCfg.url, finalCfg.async);
             _setHeaders(xhr, finalCfg.headers);
             xhr.send(data);
+
+            return xhr;
         }
     }
 
@@ -338,7 +344,7 @@
 
     //  判断数组是否为由函数组成
     function _arrayFnCollection(arr) {
-        for(var i = 0, len = arr.length; i ++) {
+        for(var i = 0, len = arr.length; i < len; i ++) {
             if (_typeOf(arr[i]) !== "Function") {
                 return false;
             }

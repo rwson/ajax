@@ -2,6 +2,11 @@
 
 window.onload = function() {
 
+    ajax.requestIntercept([
+        function(xhr) {},
+        function(xhr) {}
+    ]);
+
     var sameDomain = {
         "json": "/json",
         "xml": "/xml",
@@ -10,7 +15,7 @@ window.onload = function() {
     };
 
     //  dataType json
-    ajax({
+    var instance = ajax({
         url: sameDomain.json,
         method: "POST",
         dataType: "JSON",
@@ -186,33 +191,6 @@ window.onload = function() {
 
         }
     });
-
-    ajax({
-        url: sameDomain.other,
-        method: "GET",
-        dataType: "text",
-        data: {
-            send: "data",
-            array: [{
-                key1: "value1",
-                key2: "value2",
-                key3: "value3"
-            }, {
-                key1: "value1",
-                key2: "value2",
-                key3: "value3"
-            }]
-        },
-        success: function(res, xhr) {
-            console.group("same domain text data type - GET");
-            console.log(res);
-            console.groupEnd();
-        },
-        error: function(res, ex, xhr) {
-
-        }
-    });
-
 
     var differentPrefix = "http://localhost:3000";
     var differentDomain = {
@@ -407,34 +385,7 @@ window.onload = function() {
 
         }
     });
-
-    ajax({
-        url: differentDomain.other,
-        withCredentials: true,
-        method: "GET",
-        dataType: "text",
-        data: {
-            send: "data",
-            array: [{
-                key1: "value1",
-                key2: "value2",
-                key3: "value3"
-            }, {
-                key1: "value1",
-                key2: "value2",
-                key3: "value3"
-            }]
-        },
-        success: function(res, xhr) {
-            console.group("different domain text data type - GET");
-            console.log(res);
-            console.groupEnd();
-        },
-        error: function(res, ex, xhr) {
-
-        }
-    });
-
+    
     //  JSONP cross domain request
     ajax({
         url: differentDomain.jsonp,
@@ -458,7 +409,6 @@ window.onload = function() {
             console.groupEnd();
         },
         error: function(ex) {
-
         }
     });
 
