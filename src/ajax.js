@@ -31,6 +31,9 @@
         text: "text/plain"
     };
 
+    var requestInterceptors = [];
+    var responseInterceptors = [];
+
     //  cache the head tag
     var body = document.getElementsByTagName("head");
 
@@ -187,8 +190,27 @@
             _setHeaders(xhr, finalCfg.headers);
             xhr.send(data);
         }
-
     }
+
+    Ajax.requestIntercept = function(fns) {
+        if(_typeOf(fns) === "Array" && _arrayFnCollection(fns)) {
+            requestInterceptors = fns;
+        } else if (_typeOf(fns) === "Function") {
+            requestInterceptors = [fns];
+        } else {
+            throw "ajax.requestIntercept excepted a function array or a function, but got" + fns.toString();
+        }
+    };
+
+    Ajax.responseIntercept = function(fn) {
+        if(_typeOf(fns) === "Array" && _arrayFnCollection(fns)) {
+            responseInterceptors = fns;
+        } else if (_typeOf(fns) === "Function") {
+            responseInterceptors = [fns];
+        } else {
+            throw "ajax.responseIntercept excepted a function array or a function, but got" + fns.toString();
+        }
+    };
 
     //  set request headers
     function _setHeaders(xhr, headers) {
@@ -314,6 +336,16 @@
         return {}.toString.call(obj).slice(8, -1);
     }
 
+    //  判断数组是否为由函数组成
+    function _arrayFnCollection(arr) {
+        for(var i = 0, len = arr.length; i ++) {
+            if (_typeOf(arr[i]) !== "Function") {
+                return false;
+            }
+        }
+        return true;
+    }
+
     //  deep copy an object
     function _copy(obj) {
         var _type, _typeIn, _isNative, res;
@@ -376,7 +408,6 @@
         }
         return res;
     }
-
 
     root.ajax = Ajax;
 

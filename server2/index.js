@@ -19,27 +19,33 @@ app.all("/json", (req, res) => {
     res.setHeader("Access-Control-Allow-Method", "GET, POST, HEAD");
     res.setHeader("Access-Control-Allow-Credentials", true);
     res.setHeader("Access-Control-Allow-Headers", "X-Custom-Header");
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001");
+    res.setHeader("Access-Control-Allow-Origin", "http://www.lawyer.cn");
 
-    var recived = req.body,
-        method = req.method.toLowerCase(),
-        response;
-    if (method === "get") {
-        recived = req.query;
-    }
+    // var recived = req.body,
+    //     method = req.method.toLowerCase(),
+    //     response;
+    // if (method === "get") {
+    //     recived = req.query;
+    // }
+
+    var response;
 
     response = {
         "status": 1,
         "type": "different domain",
-        "recived": recived,
-        "res": {
-            "data": "test",
-            "arr": [1, 2, 3]
-        }
+        "res": []
     };
 
-    res.type(req.headers.accept);
-    res.status(200).send(response);
+    for (var i = 0; i < 50; i++) {
+        response.res.push({
+            "data": "test",
+            "arr": [1 * i, 2 * i, 3 * i],
+            "index": i
+        });
+    }
+
+	res.type("application/json");
+    res.status(200).send(response);	
 });
 
 app.all("/xml", (req, res) => {
