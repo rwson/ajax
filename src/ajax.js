@@ -91,7 +91,7 @@
         if (dataType === "jsonp") {
             scriptNode = document.createElement("script");
             scriptNode.type = "text/javascript";
-            if (finalCfg.url.indexOf("?") > -1) {
+            if (finalCfg.url.indexOf("?") > -1 && data !== "undefined") {
                 finalCfg.url += data;
             } else {
                 finalCfg.url += ("?" + data);
