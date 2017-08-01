@@ -208,7 +208,7 @@
         }
     };
 
-    Ajax.responseIntercept = function(fn) {
+    Ajax.responseIntercept = function(fns) {
         if(_typeOf(fns) === "Array" && _arrayFnCollection(fns)) {
             responseInterceptors = fns;
         } else if (_typeOf(fns) === "Function") {
